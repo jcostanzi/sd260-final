@@ -99,7 +99,6 @@ class App extends Component {
     console.log({searchValue});
 
     const filteredMoviesByGenre = [];
-    const filteredMyMovies = [];
 
     let searchResults = '';
     let movieCount = 0;
@@ -117,11 +116,8 @@ class App extends Component {
       movieCount += filteredMoviesByGenre[filteredMoviesByGenre.length - 1].movies.length;
     });
 
-    this.state.myMovieList.forEach((m) => {
-      if (m.title.toLowerCase().includes(searchValueToLower) || m.plot.toLowerCase().includes(searchValueToLower)) {
-        filteredMyMovies.push(m);
-        movieCount++;
-      }
+    const filteredMyMovies = this.state.myMovieList.filter((m) => {
+      return m.title.toLowerCase().includes(searchValueToLower) || m.plot.toLowerCase().includes(searchValueToLower);
     });
 
     if (searchValue != '') {

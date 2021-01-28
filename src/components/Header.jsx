@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function Header({searchValue, searchResults, handleChange}) {
+function Header({searchValue, searchResults, handleChange, listViewOnClick}) {
 
   return (
     <header className="header">
@@ -21,10 +21,15 @@ function Header({searchValue, searchResults, handleChange}) {
           </ul>
         </nav>
       </div>
+
       <form id="search" className="search" onSubmit={ (e) => e.preventDefault() }>
         <input type="search" placeholder="Search for a title..." value={searchValue} onChange={ (e) => handleChange(e) } />
         <div className="searchResults">{searchResults}</div>
       </form>
+
+      <div className={ window.location.pathname === '/my-list' ? '' : 'hidden-elem' }>
+        <button onClick={listViewOnClick}>Toggle View</button>
+      </div>
     </header>
   );
 }

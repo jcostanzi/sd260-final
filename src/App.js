@@ -12,6 +12,8 @@ class App extends Component {
     this.state = {
       searchValue: '',
       searchResults: '',
+      genres: [],
+      myMoviesListView: false,
       moviesByGenre: [],
       myMovieList: [],
       filteredMovies: [],
@@ -20,12 +22,17 @@ class App extends Component {
     this.handleAdd = this.handleAdd.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
     this.handleSearchChange = this.handleSearchChange.bind(this);
+    this.toggleMyListView = this.toggleMyListView.bind(this);
   }
 
   componentDidMount() {
 
     MovieAPI.genres()
       .then(genres => {
+
+        this.setState({
+          genres: genres
+        });
 
         MovieAPI.getAll()
           .then(data => {
@@ -168,6 +175,14 @@ class App extends Component {
     }
   }
 
+  toggleMyListView() {
+    this.setState((prevState) => {
+      return {
+        myMoviesListView: !prevState.myMoviesListView
+      };
+    });
+  }
+
   render = () => {
     return (
       <>
@@ -175,9 +190,10 @@ class App extends Component {
           searchValue={this.state.searchValue}
           searchResults={this.state.searchResults}
           handleChange={this.handleSearchChange}
+          listViewOnClick={this.toggleMyListView}
         />
         <Switch>
-          <Route path="/my-list" render={ (props) => <MyMovieList movies={this.state.myMovieList} handleRemove={this.handleRemove} {...props} />} />
+          <Route path="/my-list" render={ (props) => <MyMovieList movies={this.state.myMovieList} allGenres={this.state.genres} myMoviesListView={this.state.myMoviesListView} handleRemove={this.handleRemove} {...props} />} />
           <Route path="/" render={ (props) => <MovieList moviesByGenre={this.state.filteredMovies} handleAdd={this.handleAdd} handleRemove={this.handleRemove} {...props} />} />
         </Switch>
       </>

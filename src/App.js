@@ -11,6 +11,7 @@ class App extends Component {
 
     this.state = {
       searchValue: '',
+      searchResults: '',
       moviesByGenre: [],
       myMovieList: [],
       filteredMovies: [],
@@ -19,7 +20,6 @@ class App extends Component {
     this.handleAdd = this.handleAdd.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
     this.handleSearchChange = this.handleSearchChange.bind(this);
-    this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -67,7 +67,8 @@ class App extends Component {
               });
 
             this.setState({
-              moviesByGenre: moviesByGenre,
+              moviesByGenre: [ ...moviesByGenre ],
+              filteredMovies: [ ...moviesByGenre ],
               myMovieList: myMovieList,
             });
           });
@@ -85,18 +86,43 @@ class App extends Component {
   }
 
   handleSearchChange(event) {
-    let searchValue = event.target.value;
+    const searchValue = event.target.value;
+    console.log({searchValue});
+    const filteredMoviesByGenre = [
+      ...this.state.moviesByGenre
+    ]
+    console.log({filteredMoviesByGenre});
+    let searchResults = '';
+    let movieCount = 0;
+
+    if (searchValue !== '') {
+      const searchValueToLower = searchValue.toLowerCase();
+
+      for (let i = 0; i < this.state.moviesByGenre.length; i++) {
+        for (let j = 0; j < this.state.moviesByGenre[i].movies.length; j++) {
+          const movie = this.state.moviesByGenre[i].movies[j];
+          const movieTitle = movie.title.toLowerCase();
+          const moviePlot = movie.plot.toLowerCase();
+
+          if (!movieTitle.includes(searchValueToLower) && !moviePlot.includes(searchValueToLower)) {
+            filteredMoviesByGenre[i].movies.splice(j, 1);
+          }
+        }
+        movieCount += filteredMoviesByGenre[i].movies.length;
+      }
+
+      searchResults = `Found ${movieCount} with the query "${searchValue}"`;
+    }
 
     this.setState(() => {
-      return { searchValue: searchValue }
+      return {
+        searchValue: searchValue,
+        searchResults: searchResults,
+        filteredMovies: filteredMoviesByGenre
+      }
     });
-    event.preventDefault();
-  }
 
-  handleSearchSubmit(event) {
     event.preventDefault();
-
-    console.log(this.state.searchValue);
   }
 
   toggleSaved(id) {
@@ -147,12 +173,12 @@ class App extends Component {
       <>
         <Header
           searchValue={this.state.searchValue}
+          searchResults={this.state.searchResults}
           handleChange={this.handleSearchChange}
-          handleSubmit={this.handleSearchSubmit}
         />
         <Switch>
           <Route path="/my-list" render={ (props) => <MyMovieList movies={this.state.myMovieList} handleRemove={this.handleRemove} {...props} />} />
-          <Route path="/" render={ (props) => <MovieList moviesByGenre={this.state.moviesByGenre} handleAdd={this.handleAdd} handleRemove={this.handleRemove} {...props} />} />
+          <Route path="/" render={ (props) => <MovieList moviesByGenre={this.state.filteredMovies} handleAdd={this.handleAdd} handleRemove={this.handleRemove} {...props} />} />
         </Switch>
       </>
     );

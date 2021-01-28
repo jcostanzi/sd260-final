@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function Header({searchValue, handleChange, handleSubmit}) {
+function Header({searchValue, searchResults, handleChange}) {
 
   return (
     <header className="header">
@@ -21,9 +21,9 @@ function Header({searchValue, handleChange, handleSubmit}) {
           </ul>
         </nav>
       </div>
-      <form id="search" className="search" onSubmit={ (e) => handleSubmit(e) }>
+      <form id="search" className="search" onSubmit={ (e) => e.preventDefault() }>
         <input type="search" placeholder="Search for a title..." value={searchValue} onChange={ (e) => handleChange(e) } />
-        <div className="searchResults"></div>
+        <div className="searchResults">{searchResults}</div>
       </form>
     </header>
   );

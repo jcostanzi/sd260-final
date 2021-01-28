@@ -17,7 +17,7 @@ function MovieRow({id, title, rating, movieGenres, allGenres, handleRemove}) {
       <td>{title}</td>
       <td>{rating}/10</td>
       <td>{movieGenresArray.join(', ')}</td>
-      <td><i class="fa fa-minus-circle fa-2x" aria-hidden="true" onClick={ (e) => handleRemove(id) }></i></td>
+      <td><i className="fa fa-minus-circle fa-2x" aria-hidden="true" onClick={ (e) => handleRemove(id) }></i></td>
     </tr>
   );
 }

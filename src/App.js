@@ -17,6 +17,7 @@ class App extends Component {
       moviesByGenre: [],
       myMovieList: [],
       filteredMovies: [],
+      filteredMyMovies: []
     }
 
     this.handleAdd = this.handleAdd.bind(this);
@@ -74,9 +75,10 @@ class App extends Component {
               });
 
             this.setState({
-              moviesByGenre: [ ...moviesByGenre ],
+              moviesByGenre: moviesByGenre,
               filteredMovies: [ ...moviesByGenre ],
               myMovieList: myMovieList,
+              filteredMyMovies: [ ...myMovieList ],
             });
           });
       });
@@ -95,29 +97,34 @@ class App extends Component {
   handleSearchChange(event) {
     const searchValue = event.target.value;
     console.log({searchValue});
-    const filteredMoviesByGenre = [
-      ...this.state.moviesByGenre
-    ]
-    console.log({filteredMoviesByGenre});
+
+    const filteredMoviesByGenre = [];
+    const filteredMyMovies = [];
+
     let searchResults = '';
     let movieCount = 0;
 
-    if (searchValue !== '') {
-      const searchValueToLower = searchValue.toLowerCase();
+    const searchValueToLower = searchValue.toLowerCase();
 
-      for (let i = 0; i < this.state.moviesByGenre.length; i++) {
-        for (let j = 0; j < this.state.moviesByGenre[i].movies.length; j++) {
-          const movie = this.state.moviesByGenre[i].movies[j];
-          const movieTitle = movie.title.toLowerCase();
-          const moviePlot = movie.plot.toLowerCase();
+    this.state.moviesByGenre.forEach((mg) => {
+      filteredMoviesByGenre.push({
+        id: mg.id,
+        name: mg.name,
+        movies: mg.movies.filter((m) => {
+          return m.title.toLowerCase().includes(searchValueToLower) || m.plot.toLowerCase().includes(searchValueToLower);
+        })
+      });
+      movieCount += filteredMoviesByGenre[filteredMoviesByGenre.length - 1].movies.length;
+    });
 
-          if (!movieTitle.includes(searchValueToLower) && !moviePlot.includes(searchValueToLower)) {
-            filteredMoviesByGenre[i].movies.splice(j, 1);
-          }
-        }
-        movieCount += filteredMoviesByGenre[i].movies.length;
+    this.state.myMovieList.forEach((m) => {
+      if (m.title.toLowerCase().includes(searchValueToLower) || m.plot.toLowerCase().includes(searchValueToLower)) {
+        filteredMyMovies.push(m);
+        movieCount++;
       }
+    });
 
+    if (searchValue != '') {
       searchResults = `Found ${movieCount} with the query "${searchValue}"`;
     }
 
@@ -125,7 +132,8 @@ class App extends Component {
       return {
         searchValue: searchValue,
         searchResults: searchResults,
-        filteredMovies: filteredMoviesByGenre
+        filteredMovies: filteredMoviesByGenre,
+        filteredMyMovies: filteredMyMovies
       }
     });
 
@@ -190,10 +198,9 @@ class App extends Component {
           searchValue={this.state.searchValue}
           searchResults={this.state.searchResults}
           handleChange={this.handleSearchChange}
-          listViewOnClick={this.toggleMyListView}
         />
         <Switch>
-          <Route path="/my-list" render={ (props) => <MyMovieList movies={this.state.myMovieList} allGenres={this.state.genres} myMoviesListView={this.state.myMoviesListView} handleRemove={this.handleRemove} {...props} />} />
+          <Route path="/my-list" render={ (props) => <MyMovieList movies={this.state.filteredMyMovies} allGenres={this.state.genres} myMoviesListView={this.state.myMoviesListView} handleRemove={this.handleRemove} listViewOnClick={this.toggleMyListView} {...props} />} />
           <Route path="/" render={ (props) => <MovieList moviesByGenre={this.state.filteredMovies} handleAdd={this.handleAdd} handleRemove={this.handleRemove} {...props} />} />
         </Switch>
       </>

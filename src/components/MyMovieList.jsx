@@ -2,7 +2,7 @@ import React from 'react';
 import Movie from './Movie';
 import MovieRow from './MovieRow';
 
-function MyMovieList({movies, myMoviesListView, allGenres, handleRemove}) {
+function MyMovieList({movies, myMoviesListView, allGenres, handleRemove, listViewOnClick}) {
 
   if (myMoviesListView) {
 
@@ -10,14 +10,15 @@ function MyMovieList({movies, myMoviesListView, allGenres, handleRemove}) {
       <>
         <div className="titleList">
           <div className="title">
-            <h1>My List</h1>
-
+            <h1>My List <i className="fa fa-list" aria-hidden="true" onClick={listViewOnClick}></i></h1>
             <table className="my-list-table">
               <thead>
-                <th>Title</th>
-                <th>Rating</th>
-                <th>Genres</th>
-                <th>Actions</th>
+                <tr>
+                  <th>Title</th>
+                  <th>Rating</th>
+                  <th>Genres</th>
+                  <th>Actions</th>
+                </tr>
               </thead>
               <tbody>
                 {
@@ -45,7 +46,7 @@ function MyMovieList({movies, myMoviesListView, allGenres, handleRemove}) {
       <>
         <div className="titleList">
           <div className="title">
-            <h1>My List</h1>
+            <h1>My List <i className="fa fa-list" aria-hidden="true" onClick={listViewOnClick}></i></h1>
             <div className="titles-wrapper">
               {
                 movies.map((m) => (

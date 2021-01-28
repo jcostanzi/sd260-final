@@ -20,7 +20,6 @@ function MovieList({moviesByGenre, handleAdd, handleRemove}) {
                   mg.movies.map((m) => {
                     return (
                       <Movie
-                        key={m.id}
                         id={m.id}
                         imgSrc={m.imgSrc}
                         title={m.title}

@@ -3,7 +3,7 @@ import React from 'react';
 function Movie({id, imgSrc, title, rating, plot, saved, handleRemove}) {
   return (
     <div className="movie" key={id}>
-      <img src={imgSrc} />
+      <img src={imgSrc} alt={title} />
       <div className="overlay">
         <div className="title">{title}</div>
         <div className="rating">{rating}/10</div>

@@ -1,6 +1,7 @@
 import React from 'react';
 
-function Header() {
+function Header({searchValue, handleChange, handleSubmit}) {
+
   return (
     <header className="header">
       <a href="/">
@@ -19,8 +20,8 @@ function Header() {
           </ul>
         </nav>
       </div>
-      <form id="search" className="search">
-        <input type="search" placeholder="Search for a title..." value="" />
+      <form id="search" className="search" onSubmit={ (e) => handleSubmit(e) }>
+        <input type="search" placeholder="Search for a title..." value={searchValue} onChange={ (e) => handleChange(e) } />
         <div className="searchResults"></div>
       </form>
     </header>

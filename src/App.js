@@ -15,7 +15,10 @@ class App extends Component {
       myMovieList: [],
     }
 
+    this.handleAdd = this.handleAdd.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
+    this.handleSearchChange = this.handleSearchChange.bind(this);
+    this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -46,7 +49,7 @@ class App extends Component {
             // Group movies by genre
             moviesByGenre.forEach((g) => {
               movies.forEach((m) => {
-                if (m.genre_ids.indexOf(g.id) != -1) {
+                if (m.genre_ids.indexOf(g.id) !== -1) {
                   g.movies.push(m);
                 }
               });
@@ -78,10 +81,29 @@ class App extends Component {
     console.log('removed: ' + id);
   }
 
+  handleSearchChange(event) {
+    let searchValue = event.target.value;
+
+    this.setState(() => {
+      return { searchValue: searchValue }
+    });
+    event.preventDefault();
+  }
+
+  handleSearchSubmit(event) {
+    event.preventDefault();
+
+    console.log(this.state.searchValue);
+  }
+
   render = () => {
     return (
       <>
-        <Header />
+        <Header
+          searchValue={this.state.searchValue}
+          handleChange={this.handleSearchChange}
+          handleSubmit={this.handleSearchSubmit}
+        />
         <Switch>
           <Route path="/my-list" render={ (props) => <MyMovieList movies={this.state.myMovieList} handleRemove={this.handleRemove} {...props} />} />
           <Route path="/" render={ (props) => <MovieList moviesByGenre={this.state.moviesByGenre} handleAdd={this.handleAdd} handleRemove={this.handleRemove} {...props} />} />

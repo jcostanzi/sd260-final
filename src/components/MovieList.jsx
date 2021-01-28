@@ -9,7 +9,7 @@ function MovieList({moviesByGenre, handleAdd, handleRemove}) {
         moviesByGenre.map((mg) => {
 
           if (mg.movies.length === 0) {
-            return <></>;
+            return <div key={mg.id}></div>;
           }
 
           return (
@@ -21,6 +21,7 @@ function MovieList({moviesByGenre, handleAdd, handleRemove}) {
                     return (
                       <Movie
                         id={m.id}
+                        key={m.id}
                         imgSrc={m.imgSrc}
                         title={m.title}
                         rating={m.rating}

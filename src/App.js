@@ -13,6 +13,7 @@ class App extends Component {
       searchValue: '',
       moviesByGenre: [],
       myMovieList: [],
+      filteredMovies: [],
     }
 
     this.handleAdd = this.handleAdd.bind(this);
@@ -74,11 +75,13 @@ class App extends Component {
   }
 
   handleAdd(id) {
-    console.log('added: ' + id);
+    MovieAPI.addToList({id});
+    this.toggleSaved(id);
   }
 
   handleRemove(id) {
-    console.log('removed: ' + id);
+    MovieAPI.removeFromList({id});
+    this.toggleSaved(id);
   }
 
   handleSearchChange(event) {
@@ -94,6 +97,49 @@ class App extends Component {
     event.preventDefault();
 
     console.log(this.state.searchValue);
+  }
+
+  toggleSaved(id) {
+
+    for (let i = 0; i < this.state.moviesByGenre.length; i++) {
+      let endLoop = false;
+      for (let j = 0; j < this.state.moviesByGenre[i].movies.length; j++) {
+        const movie = this.state.moviesByGenre[i].movies[j];
+        const newSavedValue = !movie.saved;
+
+        if (movie.id === id) {
+
+          // Update state for moviesByGenre
+          this.setState((prevState) => {
+            const newMovies = [
+              ...prevState.moviesByGenre
+            ];
+            newMovies[i].movies[j].saved = newSavedValue;
+            return {
+              moviesByGenre: newMovies
+            }
+          });
+
+          // Update state for myMovieList
+          if (newSavedValue) {
+            this.setState((prevState) => {
+              return {
+                myMovieList: prevState.myMovieList.concat(movie)
+              }
+            });
+
+          } else {
+            this.setState((prevState) => ({
+              myMovieList: prevState.myMovieList.filter((sm) => sm.id !== movie.id),
+            }));
+          }
+
+          endLoop = true;
+          break;
+        }
+      }
+      if (endLoop) { break; }
+    }
   }
 
   render = () => {
